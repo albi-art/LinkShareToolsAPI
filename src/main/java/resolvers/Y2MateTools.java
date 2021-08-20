@@ -20,11 +20,10 @@ import static java.net.HttpURLConnection.HTTP_OK;
  */
 public class Y2MateTools implements YoutubeTools {
 
-    @Override
-    public String getStreamUrl(String videoId) throws VideoNotFoundException, ServiceNotAvailableException {
+    public VideoInfo getVideoInfo(String videoId) throws VideoNotFoundException, ServiceNotAvailableException {
         try {
             JSONObject json = getJsonFromApi(videoId);
-            return parseStreamUrl(json);
+            return new VideoInfo(parseStreamUrl(json));
         } catch (JSONException | InterruptedException | IOException exception) {
             exception.printStackTrace();
         }
@@ -32,6 +31,9 @@ public class Y2MateTools implements YoutubeTools {
         return null;
     }
 
+    /**
+     * Getting first video stream link from JSON object
+     */
     private String parseStreamUrl(JSONObject videoInfoJson) throws JSONException {
         return videoInfoJson.getJSONArray("url").getJSONObject(0).getString("url");
     }
@@ -44,7 +46,7 @@ public class Y2MateTools implements YoutubeTools {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         System.out.printf("ID=%s, status: %s%n", videoId, response.statusCode());
-        switch (response.statusCode()){
+        switch (response.statusCode()) {
             case HTTP_OK:
                 return new JSONObject(response.body());
             case HTTP_BAD_REQUEST:
@@ -54,14 +56,14 @@ public class Y2MateTools implements YoutubeTools {
         throw new ServiceNotAvailableException("Service returned HTTP status: " + response.statusCode());
     }
 
-    private HttpClient prepareClient(){
+    private HttpClient prepareClient() {
         return HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
                 .followRedirects(HttpClient.Redirect.NORMAL)
                 .build();
     }
 
-    private HttpRequest prepareConvertRequest(String videoId){
+    private HttpRequest prepareConvertRequest(String videoId) {
         String videoUrl = "https://youtube.com/watch?v=" + videoId;
         String API_URL = "https://api.y2mate.guru/api/convert";
 

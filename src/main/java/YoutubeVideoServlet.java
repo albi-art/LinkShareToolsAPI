@@ -1,7 +1,7 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import errors.IdIsNotSpecifiedError;
 import errors.APIError;
+import errors.IdIsNotSpecifiedError;
 import exceptions.ServiceNotAvailableException;
 import exceptions.VideoNotFoundException;
 import resolvers.YoutubeTools;
@@ -30,13 +30,12 @@ public class YoutubeVideoServlet extends HttpServlet {
             return;
         }
 
-        try{
-            String streamVideoUrl = youtubeTools.getStreamUrl(videoId);
-            outputJson(response, gson.toJson(new VideoInfo(streamVideoUrl)));
-        } catch (VideoNotFoundException exception){
+        try {
+            outputJson(response, gson.toJson(youtubeTools.getVideoInfo(videoId)));
+        } catch (VideoNotFoundException exception) {
             response.setStatus(HTTP_NOT_FOUND);
             outputJson(response, gson.toJson(new APIError(exception.getMessage())));
-        } catch (ServiceNotAvailableException exception){
+        } catch (ServiceNotAvailableException exception) {
             response.setStatus(HTTP_UNAVAILABLE);
             outputJson(response, gson.toJson(new APIError(exception.getMessage())));
         }
@@ -46,7 +45,7 @@ public class YoutubeVideoServlet extends HttpServlet {
         response.setContentType("text/json;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             out.println(responseJSON);
-        } catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             response.setStatus(HTTP_UNAVAILABLE);
         }
