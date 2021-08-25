@@ -1,3 +1,5 @@
+package servlets;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import errors.APIError;
@@ -5,6 +7,7 @@ import errors.IdIsNotSpecifiedError;
 import exceptions.ServiceNotAvailableException;
 import exceptions.VideoNotFoundException;
 import resolvers.YoutubeTools;
+import utils.IoC;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
