@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2021.
+ * https://github.com/albi-art/LinkReceiver
+ */
 package utils;
 
 import lombok.Getter;

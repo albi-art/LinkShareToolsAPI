@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2021.
+ * https://github.com/albi-art/LinkReceiver
+ */
 package servlets;
 
 import com.google.gson.Gson;
