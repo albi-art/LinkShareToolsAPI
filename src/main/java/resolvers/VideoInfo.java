@@ -7,4 +7,6 @@ import lombok.Getter;
 public class VideoInfo {
     @Getter
     private final String stream_url;
+    @Getter
+    private final String stream_hls_url;
 }

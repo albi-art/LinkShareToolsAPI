@@ -19,11 +19,14 @@ import static java.net.HttpURLConnection.HTTP_OK;
  * This class allows you to receive a information of a Youtube video through the Y2Mate service
  */
 public class Y2MateTools implements YoutubeTools {
+    private final HLSLinkTools hlsLinkTools = HLSLinkTools.getInstance();
 
     public VideoInfo getVideoInfo(String videoId) throws VideoNotFoundException, ServiceNotAvailableException {
         try {
             JSONObject json = getJsonFromApi(videoId);
-            return new VideoInfo(parseStreamUrl(json));
+            String streamUrl = parseStreamUrl(json);
+            String hlsStreamUrl = hlsLinkTools.buildHlsUrl(streamUrl);
+            return new VideoInfo(streamUrl, hlsStreamUrl);
         } catch (JSONException | InterruptedException | IOException exception) {
             exception.printStackTrace();
         }
