@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 
 @WebServlet(name = "hlsServlet", value = "/hls/get-video-stream.m3u8")
 public class HlsServlet extends HttpServlet {
@@ -29,7 +30,12 @@ public class HlsServlet extends HttpServlet {
 
         try {
             String sourceLink = hlsLinkTools.getHlsLinkByHash(linkHash);
-            System.out.println(sourceLink);
+            System.out.printf("Source link: %s%n", sourceLink);
+            if (sourceLink == null) {
+                response.setStatus(HTTP_NOT_FOUND);
+                return;
+            }
+
             response.sendRedirect(sourceLink);
         } catch (IOException exception) {
             exception.printStackTrace();
