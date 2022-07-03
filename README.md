@@ -1,6 +1,8 @@
 # LinkShareToolsAPI
 API with tools for the Android app named LinkReceiver (https://github.com/albi-art/LinkReceiver).
 
+Demo: https://lst-api.herokuapp.com
+
 ## Requests
 #### Get Youtube video info
     GET: /youtube/get-video-info?id=<youtube_video_id>
