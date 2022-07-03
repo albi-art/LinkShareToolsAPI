@@ -23,6 +23,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
  * This class allows you to receive a information of a Youtube video through the Y2Mate service
  */
 public class Y2MateTools implements YoutubeTools {
+    private static final String API_SERVER = "https://154.82.111.45.sslip.io";
     private final HLSLinkTools hlsLinkTools = HLSLinkTools.getInstance();
 
     public VideoInfo getVideoInfo(String videoId) throws VideoNotFoundException, ServiceNotAvailableException {
@@ -42,7 +43,7 @@ public class Y2MateTools implements YoutubeTools {
      * Getting first video stream link from JSON object
      */
     private String parseStreamUrl(JSONObject videoInfoJson) throws JSONException {
-        return videoInfoJson.getJSONArray("url").getJSONObject(0).getString("url");
+        return API_SERVER + videoInfoJson.getJSONObject("data").getString("mp4");
     }
 
     private JSONObject getJsonFromApi(String videoId)
@@ -72,13 +73,24 @@ public class Y2MateTools implements YoutubeTools {
 
     private HttpRequest prepareConvertRequest(String videoId) {
         String videoUrl = "https://youtube.com/watch?v=" + videoId;
-        String API_URL = "https://api.y2mate.guru/api/convert";
+        String API_URL = API_SERVER + "/newp";
 
         return HttpRequest.newBuilder()
                 .uri(URI.create(API_URL))
                 .timeout(Duration.ofMinutes(2))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString("{\"url\":\"" + videoUrl + "\"}"))
+                .header("Content-Type", "multipart/form-data; boundary=---------------------------")
+                .POST(HttpRequest.BodyPublishers.ofString("""
+                        
+                        -----------------------------
+                        Content-Disposition: form-data; name="u"
+                        
+                        %videoUrl%
+                        -----------------------------
+                        Content-Disposition: form-data; name="c"
+                        
+                        RU
+                        -------------------------------
+                        """.replace("%videoUrl%", videoUrl)))
                 .build();
     }
 }
